@@ -2,11 +2,11 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 // Routing
 const database = require('./src/utils/database')
+const router = require('./src/routes/index')
 
 async function init() {
     try {
@@ -20,12 +20,34 @@ async function init() {
         app.use('/public', express.static('public'));
 
         // Route
-        app.get("/", (req, res) => {
+        app.get("/", (res) => {
             res.status(200).json({
-                message: "Server Is Running",
+                success: true,
+                message: "Kantin Pelajar API Server is Running",
+                version: "1.0.0",
+                endpoints: {
+                    auth: {
+                        register: "POST /api/auth/register",
+                        login: "POST /api/auth/login",
+                        me: "GET /api/auth/me",
+                        logout: "GET /api/auth/logout",
+                        updateProfile: "PUT /api/auth/update-profile",
+                        changePassword: "PUT /api/auth/change-password",
+                        uploadAvatar: "POST /api/auth/upload-avatar"
+                    },
+                    users: {
+                        getAll: "GET /api/users",
+                        getById: "GET /api/users/:id",
+                        update: "PUT /api/users/:id",
+                        delete: "DELETE /api/users/:id",
+                        stats: "GET /api/users/stats"
+                    }
+                },
                 data: null,
             });
         });
+
+        app.use("/api", router);
 
         const PORT = process.env.PORT || 9495
         app.listen(PORT, () => {
