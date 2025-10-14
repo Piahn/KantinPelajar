@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { UserModel } = require('../models/user.model');
-const response = require('../utils/response'); // <-- Import Response utility
+const response = require('../utils/response');
 
-// Middleware untuk melindungi route yang membutuhkan otentikasi
 const protect = async (req, res, next) => {
     let token;
 
@@ -10,10 +9,7 @@ const protect = async (req, res, next) => {
         token = req.cookies.token;
     }
 
-    if (!token) {
-        // Gunakan Response.unauthorized untuk konsistensi
-        return response.unauthorized(res, 'Tidak terotorisasi, harap login terlebih dahulu.');
-    }
+    if (!token) return response.unauthorized(res, 'Tidak terotorisasi, harap login terlebih dahulu.');
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -29,7 +25,7 @@ const protect = async (req, res, next) => {
     }
 };
 
-// Middleware untuk otorisasi berdasarkan role
+
 const authorize = (...roles) => {
     return (req, res, next) => {
         if (!req.user || !roles.includes(req.user.role)) {

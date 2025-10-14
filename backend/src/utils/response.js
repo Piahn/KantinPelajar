@@ -146,4 +146,22 @@ module.exports = {
             data: null,
         });
     },
+
+    /**
+     * Mengirim respons yang terpaginasi (200 OK)
+     * @param {object} res - Objek respons Express
+     * @param {Array} data - Array data untuk halaman saat ini
+     * @param {object} pagination - Informasi paginasi
+     * @param {string} message - Pesan sukses
+     */
+    pagination(res, data, pagination, message) {
+        res.status(200).json({
+            meta: {
+                status: 200,
+                message,
+            },
+            data,
+            pagination,
+        });
+    },
 };
