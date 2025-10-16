@@ -42,7 +42,10 @@ module.exports = {
      */
     async getAllBanners(req, res) {
         try {
-            const { limit = 10, page = 1, search } = req.query;
+            const page = parseInt(req.query.page, 10) || 1;
+            const limit = parseInt(req.query.limit, 10) || 10;
+            const search = req.query.search || '';
+
             const query = {};
 
             if (search) {
@@ -102,7 +105,7 @@ module.exports = {
     async updateBanner(req, res) {
         try {
             const { id } = req.params;
-            const { title, isShow } = req.body; // <-- Ambil data teks dari body
+            const { title, isShow } = req.body;
 
             if (!isValidObjectId(id)) {
                 return response.badRequest(res, "ID Banner tidak valid.");

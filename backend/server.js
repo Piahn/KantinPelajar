@@ -20,7 +20,7 @@ async function init() {
         app.use(express.static('public'));
 
         // Route
-        app.get("/", (res) => {
+        app.get("/", (req, res) => {
             res.status(200).json({
                 success: true,
                 message: "Kantin Pelajar API Server is Running",

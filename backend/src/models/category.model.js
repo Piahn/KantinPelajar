@@ -33,7 +33,7 @@ const categorySchema = new mongoose.Schema({
     },
 }, {
     timestamps: true
-}).index({ slug: 1 });
+})
 
 // Generate slug dari name sebelum save
 categorySchema.pre('save', function (next) {
