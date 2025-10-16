@@ -19,13 +19,14 @@ module.exports = {
             }
 
             const imagePath = req.file.path;
+            const imageUrl = `${process.env.BASE_URL}/images/${imagePath}`;
 
-            await bannerDTO.validate({ title, isShow, image: imagePath });
+            await bannerDTO.validate({ title, isShow, image: imageUrl });
 
             const newBanner = await BannerModel.create({
                 title,
                 isShow,
-                image: imagePath
+                image: imageUrl
             });
 
             response.success(res, newBanner, 'Banner berhasil dibuat');
@@ -116,12 +117,16 @@ module.exports = {
             let updateData = { title, isShow };
 
             if (req.file) {
+                const oldImagePath = bannerToUpdate.image.replace(process.env.BASE_URL, 'public');
+
                 try {
-                    await fs.promises.unlink(bannerToUpdate.image);
+                    await fs.promises.unlink(oldImagePath);
                 } catch (unlinkError) {
-                    console.error("Gagal menghapus gambar lama (mungkin file tidak ada):", unlinkError.message);
+                    console.error("Gagal menghapus gambar lama:", unlinkError.message);
                 }
-                updateData.image = req.file.path;
+
+                const filename = req.file.filename;
+                updateData.image = `${process.env.BASE_URL}/images/${filename}`;
             }
 
             const updatedBanner = await BannerModel.findByIdAndUpdate(id, updateData, {
@@ -152,11 +157,12 @@ module.exports = {
                 return response.notFound(res, 'Banner tidak ditemukan');
             }
 
-            fs.unlink(banner.image, (err) => {
-                if (err) {
-                    console.error("Gagal menghapus gambar:", err);
-                }
-            });
+            const imagePath = banner.image.replace(process.env.BASE_URL, 'public');
+            try {
+                await fs.promises.unlink(imagePath);
+            } catch (unlinkError) {
+                console.error("Gagal menghapus gambar (mungkin file tidak ada):", unlinkError.message);
+            }
 
             await BannerModel.findByIdAndDelete(id);
 

@@ -13,7 +13,7 @@ router.post(
     '/',
     protect,
     authorize('admin'),
-    uploadMiddleware,
+    uploadMiddleware('image'),
     bannerController.createBanner
 );
 
@@ -22,7 +22,7 @@ router.put(
     '/:id',
     protect,
     authorize('admin'),
-    uploadMiddleware,
+    uploadMiddleware('image'),
     bannerController.updateBanner
 );
 

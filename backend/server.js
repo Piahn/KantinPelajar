@@ -17,7 +17,7 @@ async function init() {
         app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
         app.use(express.json());
         app.use(cookieParser());
-        app.use('/public', express.static('public'));
+        app.use(express.static('public'));
 
         // Route
         app.get("/", (res) => {
